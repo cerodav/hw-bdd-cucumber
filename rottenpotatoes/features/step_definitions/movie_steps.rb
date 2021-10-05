@@ -1,6 +1,5 @@
 
 Given (/the following movies exist:/) do |movies_table|
-  log('asdasdasdasd')
   movies_table.hashes.each do |movie|
     Movie.create!(title: movie[:title], rating: movie[:rating], release_date: movie[:release_date])
   end
@@ -8,26 +7,6 @@ end
 
 Then (/(.*) seed movies should exist/) do | n_seeds |
   expect(Movie.count).to match (n_seeds.to_i)
-end
-
-Then ('table header {string} should be hilighted') do |string|
-  className = 'hilite'
-  elementId = nil
-  if string == "Movie Title"
-    elementId = 'title_header'
-  end
-  if string == "Release Date"
-    elementId = 'release_date_header'
-  end
-  expect(page.find("##{elementId}").find(:xpath, '..')[:class].include?("#{className}")).to match(true)
-end
-
-Then (/I should see "(.*)" first/) do |e1|
-  expect(page.first(:xpath, '//table[@id="movies"]//tbody//tr//td').text).to match(e1)
-end
-
-Then (/I should see "(.*)" last/) do |e1|
-  expect(page.all(:xpath, '//table[@id="movies"]//tbody//tr').last.first('td').text).to match(e1)
 end
 
 Then (/I should see "(.*)" before "(.*)"/) do |e1, e2|
@@ -45,18 +24,33 @@ When (/I (un)?check the following ratings: (.*)/) do |choice, rating_list|
   end
 end
 
-Then (/I should (not )?see the following movies: (.*)$/) do |present, movies_list|
-  movies = movies_list.split(', ')
+Then (/I should (not )?see the following movies: (.*)$/) do |presence, movie_list|
+  movies = movie_list.split(', ')
   movies.each do |movie|
-    if present.nil?
-      expect(page).to have_content(movie)
-    else
-      expect(page).not_to have_content(movie)
-    end
+    presence.nil? ? (expect(page).to have_content(movie)) : (expect(page).not_to have_content(movie))
   end
 end
 
 Then (/I should see all the movies$/) do
-  log('asdasdasdasd')
   expect(page.all(:xpath, '//table[@id="movies"]//tbody//tr').count).to match(Movie.count)
+end
+
+Then ('table header {string} should be hilighted') do |string|
+  className = 'hilite'
+  elementId = nil
+  if string == "Movie Title"
+    elementId = 'title_header'
+  end
+  if string == "Release Date"
+    elementId = 'release_date_header'
+  end
+  expect(page.find("##{elementId}").find(:xpath, '..')[:class].include?("#{className}")).to match(true)
+end
+
+Then (/I should see "(.*)" first/) do |movie_name|
+  expect(page.first(:xpath, '//table[@id="movies"]//tbody//tr//td').text).to match(movie_name)
+end
+
+Then (/I should see "(.*)" last/) do |movie_name|
+  expect(page.all(:xpath, '//table[@id="movies"]//tbody//tr').last.first('td').text).to match(movie_name)
 end
