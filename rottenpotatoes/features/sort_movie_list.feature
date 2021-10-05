@@ -1,6 +1,6 @@
 Feature: display list of movies sorted by different criteria
 
-  As an avid moviegoer
+  As an avid movie goer
   So that I can quickly browse movies based on my preferences
   I want to see movies sorted by title or release date
 
@@ -24,8 +24,19 @@ Background: movies have been added to database
 
 Scenario: sort movies alphabetically
   When I follow "Movie Title"
-  # your steps here
+  Then table header "Movie Title" should be hilighted
+  Then I should see "2001: A Space Odyssey" first
+  Then I should see "When Harry Met Sally" last
+  Then I should see "2001: A Space Odyssey" before "Aladdin"
+  Then I should see "Aladdin" before "Amelie"
+  Then I should see "Chocolat" before "When Harry Met Sally"
+  
 
 Scenario: sort movies in increasing order of release date
   When I follow "Release Date"
-  # your steps here
+  Then table header "Release Date" should be hilighted
+  Then I should see "2001: A Space Odyssey" first
+  Then I should see "The Help" last
+  Then I should see "2001: A Space Odyssey" before "Aladdin"
+  Then I should see "Aladdin" before "Amelie"
+  Then I should see "When Harry Met Sally" before "Chocolat"
