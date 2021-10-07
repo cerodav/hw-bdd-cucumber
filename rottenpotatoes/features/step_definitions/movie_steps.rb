@@ -10,7 +10,13 @@ Then (/(.*) seed movies should exist/) do | n_seeds |
 end
 
 Then (/I should see "(.*)" before "(.*)"/) do |e1, e2|
-  expect(/[\s\S]*#{e1}[\s\S]*#{e2}/).to match(page.body)
+  movie_list = []
+  page.all(:xpath, '//table[@id="movies"]//tbody//tr').each do |x|
+    movie_list.append(x.first('td').text)
+  end
+  e1Index = movie_list.find_index(e1)
+  e2Index = movie_list.find_index(e2)
+  expect(e1Index < e2Index).to match(true)
 end
 
 When (/^I press "(.*)" button/) do |button|
@@ -31,7 +37,7 @@ Then (/I should (not )?see the following movies: (.*)$/) do |presence, movie_lis
   end
 end
 
-Then (/I should see all the movies$/) do
+Then (/I should see all of the movies$/) do
   expect(page.all(:xpath, '//table[@id="movies"]//tbody//tr').count).to match(Movie.count)
 end
 

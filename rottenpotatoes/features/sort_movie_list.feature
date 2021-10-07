@@ -30,7 +30,6 @@ Scenario: sort movies alphabetically
   Then I should see "2001: A Space Odyssey" before "Aladdin"
   Then I should see "Aladdin" before "Amelie"
   Then I should see "Chocolat" before "When Harry Met Sally"
-  
 
 Scenario: sort movies in increasing order of release date
   When I follow "Release Date"

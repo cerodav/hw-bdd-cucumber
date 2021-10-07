@@ -1,0 +1,80 @@
+Using the default profile...
+Feature: display list of movies filtered by MPAA rating
+  As a concerned parent
+  So that I can quickly browse movies appropriate for my family
+  I want to see movies matching only certain MPAA ratings
+
+  Background: movies have been added to database # features/filter_movie_list.feature:7
+    Given the following movies exist:            # features/step_definitions/movie_steps.rb:2
+      | title                   | rating | release_date |
+      | Aladdin                 | G      | 25-Nov-1992  |
+      | The Terminator          | R      | 26-Oct-1984  |
+      | When Harry Met Sally    | R      | 21-Jul-1989  |
+      | The Help                | PG-13  | 10-Aug-2011  |
+      | Chocolat                | PG-13  | 5-Jan-2001   |
+      | Amelie                  | R      | 25-Apr-2001  |
+      | 2001: A Space Odyssey   | G      | 6-Apr-1968   |
+      | The Incredibles         | PG     | 5-Nov-2004   |
+      | Raiders of the Lost Ark | PG     | 12-Jun-1981  |
+      | Chicken Run             | G      | 21-Jun-2000  |
+    And I am on the RottenPotatoes home page     # features/step_definitions/web_steps.rb:44
+    Then 10 seed movies should exist             # features/step_definitions/movie_steps.rb:8
+
+  Scenario: restrict to movies with 'PG' or 'R' ratings                                                                            # features/filter_movie_list.feature:25
+    When I check the following ratings: PG, R                                                                                      # features/step_definitions/movie_steps.rb:27
+    And I uncheck the following ratings: PG-13, G                                                                                  # features/step_definitions/movie_steps.rb:27
+    And I press "Refresh" button                                                                                                   # features/step_definitions/movie_steps.rb:23
+    Then I should not see the following movies: Chocolat, Aladdin, 2001: A Space Odyssey, Chicken Run, The Help                    # features/step_definitions/movie_steps.rb:34
+    Then I should see the following movies: The Terminator, When Harry Met Sally, The Incredibles, Raiders of the Lost Ark, Amelie # features/step_definitions/movie_steps.rb:34
+    Given I check the following ratings: PG-13                                                                                     # features/step_definitions/movie_steps.rb:27
+    And I press "Refresh" button                                                                                                   # features/step_definitions/movie_steps.rb:23
+    Then I should see the following movies: The Help, Chocolat                                                                     # features/step_definitions/movie_steps.rb:34
+    Then I should not see the following movies: 2001: A Space Odyssey, Chicken Run, Aladdin                                        # features/step_definitions/movie_steps.rb:34
+
+  Scenario: all ratings selected                        # features/filter_movie_list.feature:38
+    When I check the following ratings: PG, R, PG-13, G # features/step_definitions/movie_steps.rb:27
+    And I press "Refresh" button                        # features/step_definitions/movie_steps.rb:23
+    Then I should see all of the movies                 # features/step_definitions/movie_steps.rb:41
+
+Feature: display list of movies sorted by different criteria
+  As an avid movie goer
+  So that I can quickly browse movies based on my preferences
+  I want to see movies sorted by title or release date
+
+  Background: movies have been added to database # features/sort_movie_list.feature:7
+    Given the following movies exist:            # features/step_definitions/movie_steps.rb:2
+      | title                   | rating | release_date |
+      | Aladdin                 | G      | 25-Nov-1992  |
+      | The Terminator          | R      | 26-Oct-1984  |
+      | When Harry Met Sally    | R      | 21-Jul-1989  |
+      | The Help                | PG-13  | 10-Aug-2011  |
+      | Chocolat                | PG-13  | 5-Jan-2001   |
+      | Amelie                  | R      | 25-Apr-2001  |
+      | 2001: A Space Odyssey   | G      | 6-Apr-1968   |
+      | The Incredibles         | PG     | 5-Nov-2004   |
+      | Raiders of the Lost Ark | PG     | 12-Jun-1981  |
+      | Chicken Run             | G      | 21-Jun-2000  |
+    And I am on the RottenPotatoes home page     # features/step_definitions/web_steps.rb:44
+    Then 10 seed movies should exist             # features/step_definitions/movie_steps.rb:8
+
+  Scenario: sort movies alphabetically                         # features/sort_movie_list.feature:25
+    When I follow "Movie Title"                                # features/step_definitions/web_steps.rb:56
+    Then table header "Movie Title" should be hilighted        # features/step_definitions/movie_steps.rb:45
+    Then I should see "2001: A Space Odyssey" first            # features/step_definitions/movie_steps.rb:57
+    Then I should see "When Harry Met Sally" last              # features/step_definitions/movie_steps.rb:61
+    Then I should see "2001: A Space Odyssey" before "Aladdin" # features/step_definitions/movie_steps.rb:12
+    Then I should see "Aladdin" before "Amelie"                # features/step_definitions/movie_steps.rb:12
+    Then I should see "Chocolat" before "When Harry Met Sally" # features/step_definitions/movie_steps.rb:12
+
+  Scenario: sort movies in increasing order of release date    # features/sort_movie_list.feature:34
+    When I follow "Release Date"                               # features/step_definitions/web_steps.rb:56
+    Then table header "Release Date" should be hilighted       # features/step_definitions/movie_steps.rb:45
+    Then I should see "2001: A Space Odyssey" first            # features/step_definitions/movie_steps.rb:57
+    Then I should see "The Help" last                          # features/step_definitions/movie_steps.rb:61
+    Then I should see "2001: A Space Odyssey" before "Aladdin" # features/step_definitions/movie_steps.rb:12
+    Then I should see "Aladdin" before "Amelie"                # features/step_definitions/movie_steps.rb:12
+    Then I should see "When Harry Met Sally" before "Chocolat" # features/step_definitions/movie_steps.rb:12
+
+4 scenarios (4 passed)
+38 steps (38 passed)
+0m0.475s
